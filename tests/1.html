@@ -1,0 +1,21 @@
+<script>
+(async () => {
+
+let response = await fetch('http://localhost:5000/api/todos');
+if (response.ok) { 
+  // if HTTP-status is 200-299
+  // get the response body (the method explained below)
+  let json = await response.json();
+        document.getElementById('para').innerHTML = JSON.stringify(json);
+} else {
+  alert("HTTP-Error: " + response.status);
+}
+
+})()
+</script>
+
+<html>
+    <body>
+        <p id="para"></p>
+    </body>
+</html>
