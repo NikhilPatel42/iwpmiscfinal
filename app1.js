@@ -11,6 +11,7 @@ const server = http.createServer(async (req, res) => {
         // get the todos.
         const todos = await new Todo().getTodos();
         res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Headers', '*');
         // set the status code, and content-type
         res.writeHead(200, { "Content-Type": "application/json" });
         // send the data

@@ -8,39 +8,49 @@ const client = new MongoClient(uri);
 
 //function URLParms2JSON(query) {}
 
-async function run(query) {
-  try {
-    // Connect the client to the server (optional starting in v4.7)
-    await client.connect();
-    await client.db("admin").command({ ping: 1 });
-    console.log("Connected successfully to server");
+class Mongo {
+    
+    async run(query) {
+      try {
+        // Connect the client to the server (optional starting in v4.7)
+        await client.connect();
+        await client.db("admin").command({ ping: 1 });
+        console.log("Connected successfully to server");
 
-    // Establish and verify connection
+        // Establish and verify connection
 
-    const database = client.db("sampleData");
-    const coll = database.coll("jobs");
+        const database = client.db("sampleData");
+        const coll = database.collection("jobs");
 
-    params = new URLSearchParams(query);
-    flag = 0;
-    mongoQuery = '';
-    params.forEach((value, key) => {
-        if(flag != 0) mongoQuery += ',';
-        console.log(key, value);
-        if(isNaN(`${value}`)) value = `"${value}"`;
-        mongoQuery += `{ "${key}": ${value} }`;
-        flag = 1;
-    });
+        par = new URLSearchParams(query);
+        flag = 0;
+        mongoQuery = '';
+        params.forEach((value, key) => {
+            if(flag != 0) mongoQuery += ',';
+            console.log(key, value);
+            if(isNaN(`${value}`)) value = `"${value}"`;
+            mongoQuery += `{ "${key}": ${value} }`;
+            flag = 1;
+        });
 
-    condition = 'and';
-    pre = `{ "$${condition}": [ `;
-    post = ']}';
-    mongoQuery = pre + mongoQuery + post;
-    mongoQueryJSON = JSON.parse(mongoQuery);
+        condition = 'and';
+        pre = `{ "$${condition}": [ `;
+        post = ']}';
+        mongoQuery = pre + mongoQuery + post;
+        mongoQueryJSON = JSON.parse(mongoQuery);
 
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
-  }
+        const cursor = coll.find(mongoQueryJSON);
+
+        console.log(cursor);
+        return cursor;
+
+      } finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+      }
+    }
 }
 
-module.exports = run(query).catch(console.dir);
+new Mongo().run(`job_salary=91293&job_skills=HLR&job_field=python`);
+
+
